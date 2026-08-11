@@ -22,7 +22,7 @@ function cleanFileName(title = 'audio') {
 }
 
 async function searchFirst(query) {
-  const searchUrl = `https://api.delirius.store/search/soundcloud?q=${encodeURIComponent(query)}`
+  const searchUrl = `https://api.delirius.online/search/soundcloud?q=${encodeURIComponent(query)}`
   const sres = await fetch(searchUrl).then(r => r.json())
   if (!sres?.status || !Array.isArray(sres.data) || !sres.data.length) {
     throw '[❗] No se encontraron resultados en SoundCloud.'
@@ -31,7 +31,7 @@ async function searchFirst(query) {
 }
 
 async function downloadTrack(scUrl) {
-  const api = `https://api.delirius.store/download/soundcloud?url=${encodeURIComponent(scUrl)}`
+  const api = `https://api.delirius.online/download/soundcloud?url=${encodeURIComponent(scUrl)}`
   const dres = await fetch(api).then(r => r.json())
   if (!dres?.status || !dres.data) {
     throw '[❗] No se pudo descargar el audio de SoundCloud.'

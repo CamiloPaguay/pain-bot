@@ -11,7 +11,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   const label = text.trim()
 
   try {
-    const apiUrl = `https://api.delirius.store/random/cat?text=${encodeURIComponent(label)}`
+    const apiUrl = `https://api.delirius.online/random/cat?text=${encodeURIComponent(label)}`
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 30000)
     const res = await fetch(apiUrl, { signal: controller.signal })

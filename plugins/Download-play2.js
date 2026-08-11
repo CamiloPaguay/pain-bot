@@ -28,7 +28,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
     
    
-    const downloadApi = `https://api.delirius.store/download/ytmp3?url=${encodeURIComponent(video.url)}`
+    const downloadApi = `https://api.delirius.online/download/ytmp3?url=${encodeURIComponent(video.url)}`
     const dres = await fetch(downloadApi).then(r => r.json())
 
     if (!dres?.status || !dres.data) {

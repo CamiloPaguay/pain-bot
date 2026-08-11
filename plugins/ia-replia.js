@@ -9,7 +9,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 
   try {
-    const apiUrl = `https://api.delirius.store/ia/ripleai?query=${encodeURIComponent(text.trim())}`
+    const apiUrl = `https://api.delirius.online/ia/ripleai?query=${encodeURIComponent(text.trim())}`
     const { data } = await axios.get(apiUrl, { timeout: 60000 })
 
     if (!data?.status) {

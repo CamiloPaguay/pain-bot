@@ -31,7 +31,7 @@ function cleanFileName(title = 'video') {
 }
 
 async function searchFirst(query) {
-  const searchUrl = `https://api.delirius.store/search/ytsearch?q=${encodeURIComponent(query)}`
+  const searchUrl = `https://api.delirius.online/search/ytsearch?q=${encodeURIComponent(query)}`
   const sres = await fetch(searchUrl).then(r => r.json())
   if (!sres?.status || !Array.isArray(sres.data) || !sres.data.length) {
     throw '[❗] No se encontraron resultados para la búsqueda.'
@@ -40,7 +40,7 @@ async function searchFirst(query) {
 }
 
 async function downloadVideo(videoUrl, format) {
-  const downloadApi = `https://api.delirius.store/download/ytmp4?url=${encodeURIComponent(videoUrl)}&format=${encodeURIComponent(format)}`
+  const downloadApi = `https://api.delirius.online/download/ytmp4?url=${encodeURIComponent(videoUrl)}&format=${encodeURIComponent(format)}`
   const dres = await fetch(downloadApi).then(r => r.json())
   if (!dres?.status || !dres.data) {
     throw '[❗] No se pudo obtener el video desde la URL.'

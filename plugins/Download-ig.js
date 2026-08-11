@@ -18,7 +18,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     let thumbUrl
 
     if (!reelUrl) {
-      const searchUrl = `https://api.delirius.store/search/instagramreels?query=${encodeURIComponent(query)}&language=es`
+      const searchUrl = `https://api.delirius.online/search/instagramreels?query=${encodeURIComponent(query)}&language=es`
       const sres = await fetch(searchUrl).then(r => r.json())
 
       if (!sres?.status || !Array.isArray(sres.data) || !sres.data.length) {
@@ -34,7 +34,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
     if (!reelUrl) throw '[❗] No se pudo obtener el enlace del reel.'
 
-    const downloadApi = `https://api.delirius.store/download/instagram?url=${encodeURIComponent(reelUrl)}`
+    const downloadApi = `https://api.delirius.online/download/instagram?url=${encodeURIComponent(reelUrl)}`
     const dres = await fetch(downloadApi).then(r => r.json())
 
     if (!dres?.status || !Array.isArray(dres.data) || !dres.data.length) {

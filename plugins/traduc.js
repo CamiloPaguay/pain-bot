@@ -15,7 +15,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
     if (!original) return m.reply('*[❗] El mensaje respondido no contiene texto válido.*')
 
     const prompt = `Traduce al español el siguiente texto. Responde solo con la traducción, sin explicaciones ni marcas:\n\n${original}`
-    const apiUrl = `https://api.delirius.store/ia/chatgpt?q=${encodeURIComponent(prompt)}`
+    const apiUrl = `https://api.delirius.online/ia/chatgpt?q=${encodeURIComponent(prompt)}`
 
     const { data } = await axios.get(apiUrl)
     if (!data?.status) {

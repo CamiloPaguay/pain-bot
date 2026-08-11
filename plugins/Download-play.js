@@ -19,7 +19,7 @@ const handler = async (m, { conn, text, usedPrefix }) => {
       videoUrl = text.trim()
     } else {
       
-      const searchUrl = `https://api.delirius.store/search/ytsearch?q=${encodeURIComponent(text)}`
+      const searchUrl = `https://api.delirius.online/search/ytsearch?q=${encodeURIComponent(text)}`
       const sres = await fetch(searchUrl).then(r => r.json())
       if (!sres?.status || !Array.isArray(sres.data) || sres.data.length === 0)
         throw "[❗] No se encontraron resultados para la búsqueda."
@@ -32,7 +32,7 @@ const handler = async (m, { conn, text, usedPrefix }) => {
     }
 
     
-    const downloadApi = `https://api.delirius.store/download/ytmp3?url=${encodeURIComponent(videoUrl)}`
+    const downloadApi = `https://api.delirius.online/download/ytmp3?url=${encodeURIComponent(videoUrl)}`
     const dres = await fetch(downloadApi).then(r => r.json())
     if (!dres?.status || !dres.data)
       throw "[❗] No se pudo obtener el audio desde la URL."

@@ -60,7 +60,7 @@ const handler = async (m, { conn, text, args }) => {
     const query = (text || args.join(' ') || '').trim()
     if (!query) return conn.reply(m.chat, `Uso: search-sticker <término>`, m, rcanal)
 
-    const searchUrl = `https://api.delirius.store/search/tenor?q=${encodeURIComponent(query)}`
+    const searchUrl = `https://api.delirius.online/search/tenor?q=${encodeURIComponent(query)}`
     const res = await fetch(searchUrl).then(r => r.json())
     if (!res?.status || !Array.isArray(res.data) || res.data.length === 0)
       return conn.reply(m.chat, '[❗] No se encontraron stickers para: ' + query, m, rcanal)

@@ -21,7 +21,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
    
 
-    const searchUrl = `https://api.delirius.store/search/instagramreels?query=${encodeURIComponent(query)}&language=es`
+    const searchUrl = `https://api.delirius.online/search/instagramreels?query=${encodeURIComponent(query)}&language=es`
     const sres = await fetch(searchUrl).then(r => r.json())
 
     if (!sres?.status || !Array.isArray(sres.data) || !sres.data.length) {

@@ -26,7 +26,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     const query = text.trim()
-    const searchUrl = `https://api.delirius.store/search/ytsearch?q=${encodeURIComponent(query)}`
+    const searchUrl = `https://api.delirius.online/search/ytsearch?q=${encodeURIComponent(query)}`
     const sres = await fetch(searchUrl).then(r => r.json())
 
     if (!sres?.status || !Array.isArray(sres.data) || !sres.data.length) {

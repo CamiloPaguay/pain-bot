@@ -11,7 +11,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   try {
     
     const searchQuery = encodeURIComponent(text)
-    const apiUrl = `https://api.delirius.store/ia/chatgpt?q=${searchQuery}`
+    const apiUrl = `https://api.delirius.online/ia/chatgpt?q=${searchQuery}`
 
     const { data } = await axios.get(apiUrl)
 

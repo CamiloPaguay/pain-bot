@@ -9,7 +9,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 
   try {
-    const apiUrl = `https://api.delirius.store/ia/copilot?query=${encodeURIComponent(text.trim())}`
+    const apiUrl = `https://api.delirius.online/ia/copilot?query=${encodeURIComponent(text.trim())}`
     const { data } = await axios.get(apiUrl, { timeout: 60000 })
 
     const response = (typeof data?.text === 'string' ? data.text.trim() : '') || ''

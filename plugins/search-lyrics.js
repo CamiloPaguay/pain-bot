@@ -38,7 +38,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     }
 
     const query = text.trim()
-    const apiUrl = `https://api.delirius.store/search/lyrics?query=${encodeURIComponent(query)}`
+    const apiUrl = `https://api.delirius.online/search/lyrics?query=${encodeURIComponent(query)}`
     const sres = await fetch(apiUrl).then(r => r.json())
 
     if (!sres?.status || !sres?.data) {
