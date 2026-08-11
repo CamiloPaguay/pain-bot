@@ -27,7 +27,7 @@ let handler = async (m, { conn, text }) => {
     const mime = q.msg?.mimetype || q.mimetype || audioMeta.mimetype || ''
 
     if (!mime.startsWith('audio/') && !q.mtype?.includes('audio')) {
-      return m.reply('[❗]  Responde a un audio o nota de voz')
+      return m.reply('[❗] Responde a un audio o nota de voz')
     }
 
     
