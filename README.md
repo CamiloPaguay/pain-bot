@@ -75,17 +75,19 @@ git --version
 
 ### 3. Clonar y dependencias
 
+En Termux usa `--no-bin-links` para evitar errores de enlaces simbólicos:
+
 ```bash
 cd ~
 git clone https://github.com/nexusday/pain-bot.git
 cd pain-bot
-npm install
+npm install --no-bin-links
 ```
 
-Si el dispositivo se queda sin memoria durante la instalación:
+Si el dispositivo se queda sin memoria:
 
 ```bash
-npm install --no-optional
+npm install --no-bin-links --no-optional
 ```
 
 ---
@@ -106,29 +108,42 @@ npm start
 
 Para detener el bot: `Ctrl + C`.
 
-### Mantenerlo activo en Termux
+### Mantenerlo activo en Termux (PM2)
 
-Si cierras la app, el proceso se detiene. Alternativas:
-
-```bash
-# Sesión en segundo plano con screen
-pkg install screen -y
-screen -S painbot
-npm start
-# Salir de screen sin cerrar el bot: Ctrl+A, luego D
-# Volver: screen -r painbot
-```
-
-O con `tmux`:
+Si cierras Termux, el proceso se detiene. Con **PM2** el bot sigue en segundo plano y se puede reiniciar solo:
 
 ```bash
-pkg install tmux -y
-tmux new -s painbot
-npm start
-# Detach: Ctrl+B, luego D
-# Reattach: tmux attach -t painbot
+# Instalar PM2 (una sola vez)
+npm install -g pm2
+
+# Desde la carpeta del bot
+cd ~/pain-bot
+
+# Primera vez: es mejor arrancar una vez con npm start, escanear el QR,
+# detener con Ctrl+C y luego dejar PM2 a cargo.
+pm2 start index.js --name painbot
+pm2 save
 ```
 
+Comandos útiles:
+
+```bash
+pm2 status              # estado
+pm2 logs painbot        # logs en vivo
+pm2 restart painbot     # reiniciar
+pm2 stop painbot        # detener
+pm2 delete painbot      # quitar del listado de PM2
+```
+
+Para que PM2 recupere el proceso al abrir Termux de nuevo:
+
+```bash
+pm2 startup
+# Ejecuta el comando que imprima PM2 (si lo muestra)
+pm2 save
+```
+
+Nota: en Android, desactiva la optimización de batería para Termux o el sistema puede matar el proceso aunque uses PM2.
 ---
 
 ## Configuración
@@ -214,7 +229,7 @@ Actualiza Node a LTS e intenta de nuevo:
 pkg reinstall nodejs-lts -y
 cd ~/pain-bot
 rm -rf node_modules
-npm install
+npm install --no-bin-links
 ```
 
 **Sesión cerrada / “logged out”**  
