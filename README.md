@@ -4,14 +4,19 @@
 
 Bot de WhatsApp multi-dispositivo (Baileys). Descargas, IA, administración de grupos, RPG, stickers y más.
 
+El repositorio **incluye `node_modules`**. No es necesario ejecutar `npm install`: clona y arranca.
+
 ```
 git clone https://github.com/nexusday/pain-bot.git
+cd pain-bot
+npm start
 ```
 
 | | |
 |---|---|
 | **Repositorio** | [github.com/nexusday/pain-bot](https://github.com/nexusday/pain-bot) |
 | **Runtime** | Node.js 20+ |
+| **Dependencias** | Incluidas en el repo (`node_modules`) |
 | **Licencia** | GPL-3.0-or-later |
 
 ---
@@ -19,8 +24,8 @@ git clone https://github.com/nexusday/pain-bot.git
 ## Índice
 
 1. [Requisitos](#requisitos)
-2. [Instalación en PC](#instalación-en-pc)
-3. [Instalación en Termux](#instalación-en-termux)
+2. [Inicio rápido](#inicio-rápido)
+3. [Termux](#termux)
 4. [Vincular cuenta](#vincular-cuenta)
 5. [PM2 en Termux](#pm2-en-termux)
 6. [Configuración](#configuración)
@@ -37,39 +42,43 @@ git clone https://github.com/nexusday/pain-bot.git
 | Componente | Detalle |
 |------------|---------|
 | Node.js | 20 LTS o superior |
-| npm | 10+ |
 | Git | versión reciente |
 | FFmpeg | recomendado (audio, video, stickers) |
-| Espacio | ~500 MB libre (dependencias + sesión) |
+| Espacio | el clone es pesado por `node_modules` (~cientos de MB) |
+
+No hace falta `npm` salvo que quieras reinstalar dependencias a mano.
 
 ---
 
-## Instalación en PC
+## Inicio rápido
 
 Windows, Linux o macOS:
 
 ```bash
 git clone https://github.com/nexusday/pain-bot.git
 cd pain-bot
-npm install
+npm start
 ```
 
-Si falla un módulo nativo:
+Listo. Las dependencias ya vienen en el proyecto.
 
-```bash
-npm install --legacy-peer-deps
-```
-
-En Debian/Ubuntu:
+En Debian/Ubuntu, si te falta FFmpeg:
 
 ```bash
 sudo apt update
 sudo apt install -y ffmpeg git
 ```
 
+Solo si algo falla al arrancar (módulos rotos o incompletos):
+
+```bash
+npm install
+# o: npm install --legacy-peer-deps
+```
+
 ---
 
-## Instalación en Termux
+## Termux
 
 ### Preparar el entorno
 
@@ -84,24 +93,24 @@ pkg install -y nodejs-lts git ffmpeg
 Verifica:
 
 ```bash
-node -v && npm -v && git --version
+node -v && git --version
 ```
 
-### Clonar e instalar
+### Clonar y arrancar
 
-En Termux usa `--no-bin-links` para evitar fallos de enlaces simbólicos:
+**No hace falta `npm install`.** Con clonar basta:
 
 ```bash
 cd ~
 git clone https://github.com/nexusday/pain-bot.git
 cd pain-bot
-npm install --no-bin-links
+npm start
 ```
 
-Con poca RAM:
+Si por algún error de módulos necesitas reinstalar (opcional):
 
 ```bash
-npm install --no-bin-links --no-optional
+npm install --no-bin-links
 ```
 
 ---
@@ -227,14 +236,15 @@ Más comandos en `.menu` / `.menu2` dentro del chat.
 
 ```text
 pain-bot/
-├── config.js       Configuración global
-├── index.js        Entrada
-├── main.js         Conexión y ciclo
-├── handler.js      Mensajes y comandos
-├── plugins/        Comandos (hot reload)
-├── lib/            Utilidades y modos
-├── storage/        Datos persistentes
-├── Sessions/       Sesión de WhatsApp (no versionar)
+├── config.js         Configuración global
+├── index.js          Entrada
+├── main.js           Conexión y ciclo
+├── handler.js        Mensajes y comandos
+├── plugins/          Comandos (hot reload)
+├── lib/              Utilidades y modos
+├── node_modules/     Dependencias (incluidas en el repo)
+├── storage/          Datos persistentes
+├── Sessions/         Sesión de WhatsApp (no versionar)
 └── package.json
 ```
 
@@ -247,11 +257,11 @@ Los plugins suelen recargarse al guardar. Si no aparece uno nuevo, reinicia con 
 ```bash
 cd pain-bot
 git pull origin main
-npm install
-# En Termux: npm install --no-bin-links
 npm start
 # o: pm2 restart painbot
 ```
+
+No hace falta `npm install` tras el pull mientras `node_modules` venga actualizado en el repo.
 
 Haz backup de `Sessions/` y de tu `config.js` antes de un `git pull` si tocaste owners o APIs.
 
@@ -265,15 +275,16 @@ Escribe `code` (no `qr`) cuando pregunte el método. Cierra otras instancias del
 **El código expira o no se acepta**  
 Pide uno nuevo reiniciando. En WhatsApp usa *Vincular con número de teléfono*, no el escáner de cámara.
 
-**Error al instalar `sharp` en Termux**
+**Error de módulos / “Cannot find module”**  
+El repo ya trae `node_modules`. Si falta o está dañado:
 
 ```bash
-pkg reinstall nodejs-lts -y
-cd ~/pain-bot
-rm -rf node_modules
+# PC
+npm install
+
+# Termux
 npm install --no-bin-links
 ```
-
 **Sesión cerrada / logged out**
 
 ```bash
