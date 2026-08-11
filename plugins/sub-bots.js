@@ -111,46 +111,34 @@ let handler = async (m, { conn }) => {
   const memoryUsage = process.memoryUsage()
   const memoryMB = Math.round(memoryUsage.heapUsed / 1024 / 1024)
 
-  let txt = `╭─「 ✦ 𓆩⚡𓆪 ɪɴғᴏ ᴅᴇ ʙᴏᴛs ✦ 」─╮\n`
-  txt += `│\n`
-  txt += `╰➺ ✧ *Bot Actual:* ${nombreBot}\n`
-  txt += `╰➺ ✧ *Número:* +${botActual}\n`
-  txt += `╰➺ ✧ *Memoria:* ${memoryMB} MB\n`
-  txt += `│\n`
-  txt += `╰────────────────╯\n\n`
-  
-  txt += `╭─「 ✦ 𓆩📊𓆪 ᴇsᴛᴀᴅɪsᴛɪᴄᴀs ✦ 」─╮\n`
-  txt += `│\n`
-  txt += `╰➺ ✧ *Total de Bots:* ${totalBots}\n`
-  txt += `╰➺ ✧ *Bot Principal:* 1\n`
-  txt += `╰➺ ✧ *Sub-Bots Activos:* ${totalSubBots}\n`
-  txt += `│\n`
-  txt += `╰────────────────╯\n\n`
+  const mainBotStatus = mainBotConn.user && mainBotConn.user.jid ? 'Conectado' : 'Desconectado'
 
- 
-  const mainBotStatus = mainBotConn.user && 
-                       mainBotConn.user.jid ? 'Conectado ✅' : 'Desconectado ❌'
+  let txt = `ɪɴғᴏ ᴅᴇ ʙᴏᴛs\n\n`
+  txt += ` *Bot actual:* ${nombreBot}\n`
+  txt += ` *Número:* +${botActual}\n`
+  txt += ` *Memoria:* ${memoryMB} MB\n\n`
 
-  txt += `╭─「 ✦ 𓆩👑𓆪 ʙᴏᴛ ᴘʀɪɴᴄɪᴘᴀʟ ✦ 」─╮\n`
-  txt += `│\n`
-  txt += `╰➺ ✧ *Número:* +${mainBotConn.user.jid.split('@')[0]}\n`
-  txt += `╰➺ ✧ *Estado:* ${mainBotStatus}\n`
-  txt += `╰➺ ✧ *Tiempo Activo:* ${mainBotFormatUptime}\n`
-  txt += `│\n`
-  txt += `╰────────────────╯\n\n`
-  
+  txt += `ᴇsᴛᴀᴅɪsᴛɪᴄᴀs\n\n`
+  txt += ` *Total de bots:* ${totalBots}\n`
+  txt += ` *Bot principal:* 1\n`
+  txt += ` *Sub-bots activos:* ${totalSubBots}\n`
+  txt += ` *Grupos (únicos):* ${totalGroups}\n\n`
+
+  txt += `ʙᴏᴛ ᴘʀɪɴᴄɪᴘᴀʟ\n\n`
+  txt += ` *Número:* +${mainBotConn.user.jid.split('@')[0]}\n`
+  txt += ` *Estado:* ${mainBotStatus}\n`
+  txt += ` *Tiempo activo:* ${mainBotFormatUptime}\n\n`
+
   if (totalSubBots > 0) {
-    txt += `╭─「 ✦ 𓆩🤖𓆪 sᴜʙ-ʙᴏᴛs ᴀᴄᴛɪᴠᴏs ✦ 」─╮\n`
-    txt += `│\n`
-    
+    txt += `sᴜʙ-ʙᴏᴛs ᴀᴄᴛɪᴠᴏs\n\n`
+
     let i = 1
     for (let [jid, subConn] of uniqueUsers) {
       const subBotNumber = jid.split('@')[0]
-      
-      
+
       const subBotConfigPath = join('./Serbot', subBotNumber, 'config.json')
       let subBotName = global.namebot || 'PAIN BOT'
-      
+
       if (fs.existsSync(subBotConfigPath)) {
         try {
           const subBotConfig = JSON.parse(fs.readFileSync(subBotConfigPath, 'utf-8'))
@@ -159,43 +147,34 @@ let handler = async (m, { conn }) => {
           console.error('Error al leer configuración del sub-bot:', err)
         }
       } else {
-       
         subBotName = `Sub-Bot ${i}`
       }
-      
-      const subBotStatus = subConn.ws?.socket?.readyState === ws.OPEN ? 'Activo ✅' : 'Inactivo ❌'
-      
-     
+
+      const subBotStatus = subConn.ws?.socket?.readyState === ws.OPEN ? 'Activo' : 'Inactivo'
+
       let userName = 'Anónimo'
       if (subConn.user && subConn.user.name) {
         userName = subConn.user.name
       } else if (subConn.authState && subConn.authState.creds && subConn.authState.creds.me && subConn.authState.creds.me.name) {
         userName = subConn.authState.creds.me.name
       }
-      
-      txt += `╰➺ ✧ *${i}. Sub Bot*\n`
-      txt += `│   • Número: +${subBotNumber}\n`
-      txt += `│   • Usuario: *${userName}*\n`
-      txt += `│   • Estado: ${subBotStatus}\n`
-      if (i < totalSubBots) txt += `│\n`
+
+      txt += `*${i}.* ${subBotName}\n`
+      txt += ` *Número:* +${subBotNumber}\n`
+      txt += ` *Usuario:* ${userName}\n`
+      txt += ` *Estado:* ${subBotStatus}\n`
+      if (i < totalSubBots) txt += `\n`
       i++
     }
-    
-    txt += `│\n`
-    txt += `╰────────────────╯\n\n`
+    txt += `\n`
   } else {
-    txt += `╭─「 ✦ 𓆩❌𓆪 sᴜʙ-ʙᴏᴛs ✦ 」─╮\n`
-    txt += `│\n`
-    txt += `╰➺ ✧ *Sin sub-bots activos*\n`
-    txt += `╰➺ ✧ *Usa #qr o #code para crear uno*\n`
-    txt += `│\n`
-    txt += `╰────────────────╯\n\n`
+    txt += `sᴜʙ-ʙᴏᴛs\n\n`
+    txt += ` *Sin sub-bots activos*\n`
+    txt += ` *Usa .code o .qrr para crear uno*\n\n`
   }
 
-  txt += `╭─「 ✦ 𓆩📈𓆪 ʀᴇsᴜᴍᴇɴ ✦ 」─╮\n`
-  txt += `│\n`
-  txt += `╰➺ ✧ *Bots Totales:* ${totalBots}`
-
+  txt += `ʀᴇsᴜᴍᴇɴ\n\n`
+  txt += ` *Bots totales:* ${totalBots}\n`
 
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
