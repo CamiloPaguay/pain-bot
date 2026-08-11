@@ -2,7 +2,7 @@ import { mkdir, writeFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { existsSync } from 'fs'
 import fetch from 'node-fetch'
-import sharp from 'sharp'
+import sharp from '../lib/sharp.js'
 import { PDFDocument } from 'pdf-lib'
 import { webp2png } from '../lib/webp2mp4.js'
 

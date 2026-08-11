@@ -1,5 +1,14 @@
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '1'
 
+process.on('unhandledRejection', (reason) => {
+  const msg = reason?.message || String(reason || '')
+  if (msg.includes('sharp') || msg.includes('android-arm64')) {
+    console.error('[sharp] rechazo controlado (imagen):', msg.split('\n')[0])
+    return
+  }
+  console.error('unhandledRejection', reason)
+})
+
 import './config.js'
 import { createRequire } from 'module'
 import path, { join } from 'path'

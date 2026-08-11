@@ -1,4 +1,4 @@
-import sharp from 'sharp'
+import sharp from '../lib/sharp.js'
 import fetch from 'node-fetch'
 import { readFileSync, existsSync } from 'fs'
 import { join, dirname } from 'path'

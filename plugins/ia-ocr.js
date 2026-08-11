@@ -1,7 +1,7 @@
 import { mkdir, writeFile, unlink } from 'fs/promises'
 import { join } from 'path'
 import { existsSync } from 'fs'
-import sharp from 'sharp'
+import sharp from '../lib/sharp.js'
 import { createWorker } from 'tesseract.js'
 import { webp2png } from '../lib/webp2mp4.js'
 

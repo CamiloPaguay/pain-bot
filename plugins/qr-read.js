@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import sharp from 'sharp'
+import sharp from '../lib/sharp.js'
 import jsQR from 'jsqr'
 import { webp2png } from '../lib/webp2mp4.js'
 

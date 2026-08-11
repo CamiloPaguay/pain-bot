@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import fluent from 'fluent-ffmpeg'
-import sharp from 'sharp'
+import sharp from '../lib/sharp.js'
 import { addExif } from '../lib/sticker.js'
 
 const SIZE = 512
