@@ -141,6 +141,8 @@ global.loadDatabase = async function loadDatabase() {
     modoHot: normalizeModeMap(global.db.data?.modoHot),
     modoIlegal: normalizeModeMap(global.db.data?.modoIlegal),
     modoHuman: normalizeModeMap(global.db.data?.modoHuman),
+    modoSad: normalizeModeMap(global.db.data?.modoSad),
+    modoPsico: normalizeModeMap(global.db.data?.modoPsico),
   }
   global.db.chain = lodash.chain(global.db.data) 
 }

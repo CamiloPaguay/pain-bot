@@ -17,7 +17,7 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
     }
 
     const action = args[0]?.toLowerCase()
-    ensureModeMap('modoHuman')
+    ensureModeMap('modoPsico')
 
     const activeMode = (name, cmd) => {
       return conn.sendMessage(m.chat, {
@@ -33,17 +33,17 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
       if (isModeActive('modoIA', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗜𝗔', 'modoia')
       if (isModeActive('modoHot', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗛𝗼𝘁', 'modohot')
       if (isModeActive('modoIlegal', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗶𝗹𝗲𝗴𝗮𝗹', 'modoilegal')
+      if (isModeActive('modoHuman', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗛𝘂𝗺𝗮𝗻𝗼', 'modohuman')
       if (isModeActive('modoSad', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗦𝗮𝗱', 'modosad')
-      if (isModeActive('modoPsico', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗣𝘀𝗶𝗰𝗼', 'modospico')
 
-      setModeState('modoHuman', m.chat, true)
+      setModeState('modoPsico', m.chat, true)
       await global.db.write()
 
       return conn.sendMessage(m.chat, {
-        text: `*Modo Humano activado*
+        text: `*Modo Psico activado*
 
-> Alguien más está en el chat… o eso parece..?
-> Puede ignorar, reaccionar con emoji o responder.
+> Alguien del chat… con mirada de psicólogo top.
+> Puede ignorar, reaccionar según el mensaje o ayudarte de verdad.
 > *Por:* @${m.sender.split('@')[0]}`,
         contextInfo: {
           ...rcanal.contextInfo,
@@ -53,18 +53,18 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
     }
 
     if (action === 'off') {
-      setModeState('modoHuman', m.chat, false)
+      setModeState('modoPsico', m.chat, false)
       await global.db.write()
 
       try {
-        const { clearHumanMemory } = await import('../lib/geminiAPI.js')
-        clearHumanMemory(m.chat)
+        const { clearPsicoMemory } = await import('../lib/geminiAPI.js')
+        clearPsicoMemory(m.chat)
       } catch (e) {
-        console.error('Error limpiando memoria humano:', e)
+        console.error('Error limpiando memoria psico:', e)
       }
 
       return conn.sendMessage(m.chat, {
-        text: `*Modo Humano desactivado*\n\n> Ya no hay presencia del bot en el grupo.\n> *Por:* @${m.sender.split('@')[0]}`,
+        text: `*Modo Psico desactivado*\n\n> Se cerró la sesión del chat.\n> *Por:* @${m.sender.split('@')[0]}`,
         contextInfo: {
           ...rcanal.contextInfo,
           mentionedJid: [m.sender]
@@ -74,11 +74,11 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
 
     if (action === 'clear' || action === 'limpiar') {
       try {
-        const { clearHumanMemory } = await import('../lib/geminiAPI.js')
-        clearHumanMemory(m.chat)
+        const { clearPsicoMemory } = await import('../lib/geminiAPI.js')
+        clearPsicoMemory(m.chat)
 
         return conn.sendMessage(m.chat, {
-          text: `🕳️ *Memoria del Modo Humano limpiada*\n> *Por:* @${m.sender.split('@')[0]}`,
+          text: `🕳️ *Memoria del Modo Psico limpiada*\n> *Por:* @${m.sender.split('@')[0]}`,
           contextInfo: {
             ...rcanal.contextInfo,
             mentionedJid: [m.sender]
@@ -92,22 +92,22 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
       }
     }
 
-    const estado = isModeActive('modoHuman', m.chat) ? 'activado' : 'desactivado'
+    const estado = isModeActive('modoPsico', m.chat) ? 'activado' : 'desactivado'
 
     return conn.sendMessage(m.chat, {
       text: `[❗] Uso: ${usedPrefix + command} on/off/clear\n\n> *Estado:* ${estado}`,
       contextInfo: { ...rcanal.contextInfo }
     }, { quoted: m })
   } catch (e) {
-    console.error('Error en modohuman:', e)
+    console.error('Error en modospico:', e)
     return conn.sendMessage(m.chat, {
-      text: '[❌] Ocurrió un error al configurar el modo humano.',
+      text: '[❌] Ocurrió un error al configurar el modo psico.',
       contextInfo: { ...rcanal.contextInfo }
     }, { quoted: m })
   }
 }
 
-handler.command = ['modohuman', 'humanmode', 'modoh', 'humandigital']
+handler.command = ['modospico', 'modopsico', 'psicomode', 'psicologo', 'modopsicologo']
 handler.group = true
 handler.admin = true
 handler.botAdmin = true

@@ -54,16 +54,16 @@ let handler = async (m, { conn, text }) => {
     try { ext = (mime.split('/')[1] || '').split(';')[0] || ext } catch (e) {}
     
     inputPath = join(tmpdir(), `input_${id}.${ext}`)
-    outputPath = join(tmpdir(), `output_${id}.ogg`)
+    outputPath = join(tmpdir(), `output_${id}.mp3`)
 
     writeFileSync(inputPath, Buffer.from(media))
 
    
  const ffmpegCommand = `ffmpeg -y -i "${inputPath}" \
 -af "asetrate=44100*1.20,aresample=44100,treble=g=4,bass=g=2" \
--c:a libopus -b:a 128k -ac 1 "${outputPath}"`
+-c:a libmp3lame -b:a 128k -ac 2 "${outputPath}"`
 
-    console.log('speed: ejecutando ffmpeg con tempo=', tempo, 'filtros: highpass/lowpass/bass, aresample=24000')
+    console.log('speed: ejecutando ffmpeg con tempo=', tempo)
     
     await execPromise(ffmpegCommand)
 
@@ -81,7 +81,8 @@ let handler = async (m, { conn, text }) => {
 
     await conn.sendMessage(m.chat, { 
       audio: finalAudioBuffer, 
-      mimetype: 'audio/ogg; codecs=opus', 
+      mimetype: 'audio/mpeg',
+      fileName: `speed-${id}.mp3`,
       ptt: false 
     }, { quoted: m })
 

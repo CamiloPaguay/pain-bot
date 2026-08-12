@@ -17,7 +17,7 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
     }
 
     const action = args[0]?.toLowerCase()
-    ensureModeMap('modoHuman')
+    ensureModeMap('modoSad')
 
     const activeMode = (name, cmd) => {
       return conn.sendMessage(m.chat, {
@@ -33,17 +33,17 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
       if (isModeActive('modoIA', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗜𝗔', 'modoia')
       if (isModeActive('modoHot', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗛𝗼𝘁', 'modohot')
       if (isModeActive('modoIlegal', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗶𝗹𝗲𝗴𝗮𝗹', 'modoilegal')
-      if (isModeActive('modoSad', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗦𝗮𝗱', 'modosad')
+      if (isModeActive('modoHuman', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗛𝘂𝗺𝗮𝗻𝗼', 'modohuman')
       if (isModeActive('modoPsico', m.chat)) return activeMode('𝗠𝗼𝗱𝗼 𝗣𝘀𝗶𝗰𝗼', 'modospico')
 
-      setModeState('modoHuman', m.chat, true)
+      setModeState('modoSad', m.chat, true)
       await global.db.write()
 
       return conn.sendMessage(m.chat, {
-        text: `*Modo Humano activado*
+        text: `*Modo Sad activado*
 
-> Alguien más está en el chat… o eso parece..?
-> Puede ignorar, reaccionar con emoji o responder.
+> Alguien triste entró al chat… o eso parece.
+> Puede ignorar, reaccionar o responder con voz baja.
 > *Por:* @${m.sender.split('@')[0]}`,
         contextInfo: {
           ...rcanal.contextInfo,
@@ -53,18 +53,18 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
     }
 
     if (action === 'off') {
-      setModeState('modoHuman', m.chat, false)
+      setModeState('modoSad', m.chat, false)
       await global.db.write()
 
       try {
-        const { clearHumanMemory } = await import('../lib/geminiAPI.js')
-        clearHumanMemory(m.chat)
+        const { clearSadMemory } = await import('../lib/geminiAPI.js')
+        clearSadMemory(m.chat)
       } catch (e) {
-        console.error('Error limpiando memoria humano:', e)
+        console.error('Error limpiando memoria sad:', e)
       }
 
       return conn.sendMessage(m.chat, {
-        text: `*Modo Humano desactivado*\n\n> Ya no hay presencia del bot en el grupo.\n> *Por:* @${m.sender.split('@')[0]}`,
+        text: `*Modo Sad desactivado*\n\n> Se fue en silencio.\n> *Por:* @${m.sender.split('@')[0]}`,
         contextInfo: {
           ...rcanal.contextInfo,
           mentionedJid: [m.sender]
@@ -74,11 +74,11 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
 
     if (action === 'clear' || action === 'limpiar') {
       try {
-        const { clearHumanMemory } = await import('../lib/geminiAPI.js')
-        clearHumanMemory(m.chat)
+        const { clearSadMemory } = await import('../lib/geminiAPI.js')
+        clearSadMemory(m.chat)
 
         return conn.sendMessage(m.chat, {
-          text: `🕳️ *Memoria del Modo Humano limpiada*\n> *Por:* @${m.sender.split('@')[0]}`,
+          text: `🕳️ *Memoria del Modo Sad limpiada*\n> *Por:* @${m.sender.split('@')[0]}`,
           contextInfo: {
             ...rcanal.contextInfo,
             mentionedJid: [m.sender]
@@ -92,22 +92,22 @@ let handler = async (m, { conn, args, usedPrefix, command, isAdmin }) => {
       }
     }
 
-    const estado = isModeActive('modoHuman', m.chat) ? 'activado' : 'desactivado'
+    const estado = isModeActive('modoSad', m.chat) ? 'activado' : 'desactivado'
 
     return conn.sendMessage(m.chat, {
       text: `[❗] Uso: ${usedPrefix + command} on/off/clear\n\n> *Estado:* ${estado}`,
       contextInfo: { ...rcanal.contextInfo }
     }, { quoted: m })
   } catch (e) {
-    console.error('Error en modohuman:', e)
+    console.error('Error en modosad:', e)
     return conn.sendMessage(m.chat, {
-      text: '[❌] Ocurrió un error al configurar el modo humano.',
+      text: '[❌] Ocurrió un error al configurar el modo sad.',
       contextInfo: { ...rcanal.contextInfo }
     }, { quoted: m })
   }
 }
 
-handler.command = ['modohuman', 'humanmode', 'modoh', 'humandigital']
+handler.command = ['modosad', 'sadmode', 'modos', 'humansad']
 handler.group = true
 handler.admin = true
 handler.botAdmin = true
