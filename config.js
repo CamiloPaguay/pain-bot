@@ -10,13 +10,13 @@ import { fileURLToPath } from 'url'
 
 // CAMBIA POR EL NUMERO QUE VA SER OWNER DEL BOT
 global.owner = [
-  ['51927909197', 'Sunkovv', true],
+  ['tunumero', 'Sunkovv', true],
 ]
 
 //  ACA PON EL LID DEL OWNER DEL BOT PARA QUE TE HAGA CASO COMO OWNER EL BOT, USA EL COMANDO /ID EN TU 
 //PRIVADO PARA SACAR TU LID
 global.ownerLid = [
-  ['198119006412828', 'Sunkovv', true],
+  ['lid', 'Sunkovv', true],
   ['acaElLid', 'nombre', true],
   ['acaElLiD', 'nombre', true]
 ]
