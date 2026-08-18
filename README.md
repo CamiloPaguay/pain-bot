@@ -2,6 +2,18 @@
 
 **By Sunkovv**
 
+<p align="center">
+  <a href="https://chat.whatsapp.com/DlkiS0Xmqby3Rc8EBlL7k7">
+    <img src="https://img.shields.io/badge/Comunidad-WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Comunidad de WhatsApp">
+  </a>
+  <a href="https://clientes.nexcodea.com/">
+    <img src="https://img.shields.io/badge/Hosting%20para%20bot-barato-111827?style=for-the-badge&logo=icloud&logoColor=white" alt="Hosting para bot barato">
+  </a>
+</p>
+
+- **Comunidad de WhatsApp:** [unirse al grupo](https://chat.whatsapp.com/DlkiS0Xmqby3Rc8EBlL7k7)
+- **Hosting para bot barato:** [clientes.nexcodea.com](https://clientes.nexcodea.com/)
+
 Bot de WhatsApp multi-dispositivo (Baileys). Descargas, IA, administración de grupos, RPG, stickers y más.
 
 El repositorio **incluye `node_modules`**. No es necesario ejecutar `npm install`: clona y arranca.
@@ -15,6 +27,8 @@ npm start
 | | |
 |---|---|
 | **Repositorio** | [github.com/nexusday/pain-bot](https://github.com/nexusday/pain-bot) |
+| **Comunidad** | [Grupo de WhatsApp](https://chat.whatsapp.com/DlkiS0Xmqby3Rc8EBlL7k7) |
+| **Hosting** | [NexCodea — hosting para bot barato](https://clientes.nexcodea.com/) |
 | **Runtime** | Node.js 20+ |
 | **Dependencias** | Incluidas en el repo (`node_modules`) |
 | **Licencia** | GPL-3.0-or-later |
