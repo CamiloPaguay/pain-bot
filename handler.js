@@ -13,6 +13,7 @@ import { handleModoDescargas } from './lib/Modos/modo-descargas.js'
 import { isViewOnceCandidate, isKnownViewOnce, runAntiViewOnce } from './lib/viewOnce.js'
 import { checkGroupRental, isRentalBypassCommand } from './lib/alquiler.js'
 import { checkCmd18Command } from './lib/cmd18.js'
+import { shouldSkipByModoSub } from './plugins/modo-sub.js'
 
 const { proto } = (await import('@whiskeysockets/baileys')).default
 const isNumber = x => typeof x === 'number' && !isNaN(x)
@@ -98,6 +99,19 @@ try {
 
 if (opts['nyimak']) return  
 if (!m.fromMe && opts['self']) return  
+
+// Solo 1 bot activo por grupo (.modosub N). El resto ignora, excepto el propio .modosub
+if (m.isGroup && !m.fromMe) {
+  try {
+    if (shouldSkipByModoSub(this, m.chat, {
+      allowModoSubCommand: true,
+      text: m.text || m.msg?.text || m.message?.conversation || '',
+      prefix: global.prefix
+    })) return
+  } catch (e) {
+    console.error('Error modosub:', e)
+  }
+}
 if (opts['swonly'] && m.chat !== 'status@broadcast') return  
 if (typeof m.text !== 'string') m.text = ''  
 
@@ -345,7 +359,7 @@ for (let plugin of processedPlugins) {
     
     if (m.isGroup && global.db.data.botGroups && global.db.data.botGroups[m.chat] === false) {
       const alwaysAllowedCommands = ['grupo']
-      if (!alwaysAllowedCommands.includes(command) && !isOwner) {
+      if (!alwaysAllowedCommands.includes(command) && !isOwner && !isAdmin) {
         return m.reply(`*[🪐] El bot está desactivado en este grupo.*\n\n> Pídele a un administrador que lo active.`)
       }
     }

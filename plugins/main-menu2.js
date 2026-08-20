@@ -153,6 +153,9 @@ ${rentalLine}> 𓂃 ࣪ ִֶָ☾.  𝚄𝚂𝚄𝙰𝚁𝙸𝙾:  @${m.sender.s
 > 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}photogp
 > 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}adg <numero>
 > 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}grupo on/off
+> 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}modosub
+> 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}modosub <n>
+> 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}modosub all
 > 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}antilink on/off
 > 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}antiimg on/off
 > 𓂃 ࣪ ִֶָ☾.  ${usedPrefix}antiaudio on/off

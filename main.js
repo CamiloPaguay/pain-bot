@@ -128,6 +128,7 @@ global.loadDatabase = async function loadDatabase() {
     sticker: {},
     settings: {},
     botGroups: {},
+    modoSub: {},
     antiImg: {},
     antiVer: {},
     bienvenidas: {},
@@ -143,6 +144,9 @@ global.loadDatabase = async function loadDatabase() {
     modoHuman: normalizeModeMap(global.db.data?.modoHuman),
     modoSad: normalizeModeMap(global.db.data?.modoSad),
     modoPsico: normalizeModeMap(global.db.data?.modoPsico),
+    modoSub: global.db.data?.modoSub && typeof global.db.data.modoSub === 'object' && !Array.isArray(global.db.data.modoSub)
+      ? global.db.data.modoSub
+      : {},
   }
   global.db.chain = lodash.chain(global.db.data) 
 }
@@ -207,15 +211,13 @@ async function handleLogin() {
 
   if (loginMethod === 'code') {
     let phoneNumber = await question(chalk.blue('Ingresa el número de WhatsApp donde estará el bot (incluye código país, ej: 521XXXXXXXXXX):\n'))
-    phoneNumber = phoneNumber.replace(/\D/g, '')
+    phoneNumber = phoneNumber.replace(/\D/g, '').replace(/^0+/, '')
 
-    
-    if (phoneNumber.startsWith('52') && phoneNumber.length === 12) {
+    // México: WhatsApp usa 521. Si ya trae 521, no volver a insertar el 1.
+    if (phoneNumber.startsWith('521') && phoneNumber.length >= 12 && phoneNumber.length <= 13) {
+      // ok
+    } else if (phoneNumber.startsWith('52') && !phoneNumber.startsWith('521') && phoneNumber.length === 12) {
       phoneNumber = `521${phoneNumber.slice(2)}`
-    } else if (phoneNumber.startsWith('52')) {
-      phoneNumber = `521${phoneNumber.slice(2)}`
-    } else if (phoneNumber.startsWith('0')) {
-      phoneNumber = phoneNumber.replace(/^0/, '')
     }
 
     if (typeof conn.requestPairingCode === 'function') {

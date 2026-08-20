@@ -19,9 +19,9 @@ const rcanal = global.rcanal || {
   contextInfo: {
     isForwarded: true,
     forwardedNewsletterMessageInfo: {
-      newsletterJid: '120363403162100537@newsletter',
+      newsletterJid: '',
       serverMessageId: 100,
-      newsletterName: 'PAIN COMMUNITY'
+      newsletterName: ''
     }
   }
 }
@@ -47,11 +47,9 @@ function clearSubBotAuth(pathAYBot) {
   }
 }
 
-let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
-  if (m.isGroup) {
-    return m.reply('*[❗] Para convertirte en Sub-Bot usa el comando en privado del bot.*')
-  }
-  
+let handler = async (m, { conn, args, usedPrefix, command, isOwner, participants, groupMetadata }) => {
+  if (!global.db.data.users[m.sender]) global.db.data.users[m.sender] = {}
+
   let time = global.db.data.users[m.sender].Subs + 120000
   const subBots = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])]
   const subBotsCount = subBots.length
@@ -61,16 +59,42 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
   }
 
   let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+ 
+  const keyAlt = m.key?.participantAlt || m.key?.remoteJidAlt
+  if (keyAlt) who = keyAlt
+
   const wantsCode = command === 'code' || args.some(arg => /^(code|--code)$/i.test(String(arg || '').trim()))
   const explicitPhone = extractPhoneFromArgs(args)
-  let phoneNumber = await resolvePhoneNumber(who, conn, explicitPhone, m)
+
+ 
+  let groupParticipants = participants || []
+  if (m.isGroup) {
+    try {
+      const fresh = await conn.groupMetadata(m.chat)
+      if (fresh?.participants?.length) {
+        groupParticipants = fresh.participants
+        if (conn.chats?.[m.chat]) conn.chats[m.chat].metadata = fresh
+      }
+    } catch {}
+  }
+
+  let phoneNumber = await resolvePhoneNumber(who, conn, explicitPhone, m, {
+    participants: groupParticipants,
+    groupId: m.isGroup ? m.chat : null,
+    groupMetadata: groupMetadata || null
+  })
   const replyJid = getPrivateReplyJid(m, conn)
 
   if (!phoneNumber) {
-    const lidHint = String(m.sender || '').split('@')[0]
-    return sendPrivateReply(m, conn, `[❗] *No se pudo obtener tu número real de WhatsApp.*\n\nWhatsApp envía un @lid interno (${lidHint}) y el código de vinculación necesita tu número con código de país.\n\n> *Opción 1:* ${usedPrefix}code <número>\n> *Ejemplo:* ${usedPrefix}code 51901437507\n\n> *Opción 2:* Escribe en un grupo donde esté el bot y vuelve a usar ${usedPrefix}code\n\n> *Opción 3:* ${usedPrefix}qrr para vincular con QR`, {
+    const lidHint = String(m.key?.participant || m.sender || '').split('@')[0]
+    const mxHint = m.isGroup
+      ? `\n\n> *En grupo:* si no detecta tu número, envía:\n> ${usedPrefix}code 521XXXXXXXXXX\n> (México usa *521*, no solo 52)`
+      : `\n\n> *México:* usa *521* + tu número (10 dígitos).\n> *Ejemplo:* ${usedPrefix}code 5215551234567`
+
+    return conn.sendMessage(m.chat, {
+      text: `[❗] *No se pudo obtener tu número real de WhatsApp.*\n\nWhatsApp envía un @lid interno (${lidHint}) y el código de vinculación necesita tu número con código de país.\n\n> *Opción 1:* ${usedPrefix}code <número>\n> *Ejemplo Perú:* ${usedPrefix}code 51901437507\n> *Ejemplo México:* ${usedPrefix}code 5215551234567${mxHint}\n\n> *Opción 2:* ${usedPrefix}qrr para vincular con QR`,
       contextInfo: { ...rcanal.contextInfo }
-    })
+    }, { quoted: m })
   }
 
   let id = phoneNumber
@@ -90,9 +114,10 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
   AYBotOptions.replyJid = replyJid
 
   if (wantsCode) {
-    await sendPrivateReply(m, conn, `⏳ *Generando código de vinculación...*\n\n> *Número:* +${phoneNumber}\n> Espera unos segundos, el código llegará en este chat.`, {
+    await conn.sendMessage(m.chat, {
+      text: `⏳ *Generando código de vinculación...*\n\n> *Número:* +${phoneNumber}\n> Espera unos segundos.`,
       contextInfo: { ...rcanal.contextInfo }
-    })
+    }, { quoted: m })
   }
 
   AYBot(AYBotOptions)
@@ -214,7 +239,7 @@ export async function AYBot(options) {
 
       if (!pairingPhone) {
         pairingCodeSent = true
-        await replyUser(`[❌] *No se pudo obtener tu número.*\n\nUsa ${usedPrefix}code en privado con el bot principal.`)
+        await replyUser(`[❌] *No se pudo obtener tu número.*\n\nUsa:\n> ${usedPrefix}code 521XXXXXXXXXX\n> (México: *521* + 10 dígitos)`)
         try { sock.ws.close() } catch {}
         pairingInProgress = false
         return false
@@ -401,9 +426,9 @@ export async function AYBot(options) {
 > *Estado:* Conectado ✅
 > *Auto-leer:* Desactivado ❌
 
-✧ *Comandos de configuración:*
-✧ *.setautoread on* - Activar auto-leer
-✧ *.setautoread off* - Desactivar auto-leer`
+*Comandos de configuración:*
+*.setautoread on* - Activar auto-leer
+*.setautoread off* - Desactivar auto-leer`
 
           
           
