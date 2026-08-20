@@ -43,6 +43,7 @@ global.prems = []
 global.multiplier = 69 
 global.maxwarn = '2'
 
+// APIS QUE USA EL BOT EN GLOBAL(NO BORRES)
 global.APIs = {
 vreden: { url: "https://api.vreden.web.id", key: null },
 delirius: { url: "https://api.delirius.online", key: null },
