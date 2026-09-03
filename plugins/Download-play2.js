@@ -11,9 +11,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     }, { quoted: m })
   }
 
-
   try {
-    
     const search = await yts(text)
     if (!search || !search.videos || search.videos.length === 0) {
       return conn.sendMessage(m.chat, {
@@ -26,8 +24,6 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
 
     const video = search.videos[0]
 
-    
-   
     const downloadApi = `https://api.delirius.online/download/ytmp3?url=${encodeURIComponent(video.url)}`
     const dres = await fetch(downloadApi).then(r => r.json())
 
@@ -40,34 +36,21 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
       }, { quoted: m })
     }
 
-  
-    const meta = {
-      title: dres.data.title || video.title,
-      author: { name: (video.author && video.author.name) || video.author || "Desconocido" },
-      timestamp: video.timestamp,
-      thumbnail: dres.data.image || video.image || video.thumbnail,
-      url: video.url
-    }
-    const down = {
-      url: typeof dres.data.download === "string" ? dres.data.download : dres.data.download?.url,
-      filename: `${meta.title}.mp3`
+    const audioUrl = typeof dres.data.download === "string" ? dres.data.download : dres.data.download?.url
+
+    if (!audioUrl) {
+      return conn.sendMessage(m.chat, {
+        text: `[❌] No se encontró la URL del audio.`,
+        contextInfo: {
+          ...rcanal.contextInfo
+        }
+      }, { quoted: m })
     }
 
-    
     await conn.sendMessage(m.chat, {
-      audio: { url: down.url },
+      audio: { url: audioUrl },
       mimetype: "audio/mpeg",
-      ptt: false,
-      contextInfo: {
-        externalAdReply: {
-          title: `ִֶָ☾. 𝐓𝐢𝐭𝐮𝐥𝐨: ${meta.title}`,
-          body: `ִֶָ☾. 𝐀𝐮𝐭𝐨𝐫: ${meta.author.name} | 𝐃𝐮𝐫𝐚𝐜𝐢𝐨́𝐧: ${meta.timestamp}`,
-          thumbnailUrl: meta.thumbnail,
-          mediaType: 4,
-          renderLargerThumbnail: false,
-          sourceUrl: meta.url
-        }
-      }
+      ptt: false
     }, { quoted: m })
 
   } catch (e) {
@@ -81,8 +64,8 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 }
 
-handler.command = ['play2', 'music2', 'song2', 'audio2']
-handler.tags = ['musica', 'audio', 'entretenimiento']
-handler.help = ['play2 <canción> - Reproducir música desde YouTube']
+handler.command = ["play2"]
+handler.tags = ["descargas"]
+handler.group = true
 
-export default handler 
+export default handler
