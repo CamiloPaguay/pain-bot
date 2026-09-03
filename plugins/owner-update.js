@@ -103,4 +103,87 @@ function gitPullHard() {
   const before = run('git rev-parse HEAD').trim()
   let remoteHash = ''
   try {
-    remoteHash = run(`git rev-parse
+    remoteHash = run(`git rev-parse ${ref}`).trim()
+  } catch {
+    throw new Error(`No se encontró la rama remota ${ref}`)
+  }
+
+  if (before === remoteHash) {
+    return 'Already up to date.'
+  }
+
+  for (const rel of PRESERVE_ON_UPDATE) {
+    runIgnore(`git rm --cached -f "${rel}"`)
+    runIgnore(`git update-index --assume-unchanged "${rel}"`)
+  }
+
+  try {
+    run(`git reset --hard ${ref}`)
+  } catch (error) {
+    const msg = error?.stderr?.toString?.() || error?.message || String(error)
+    if (msg.includes('unlink') || msg.includes('Invalid argument')) {
+      throw new Error(
+        'Algunos archivos de node_modules están en uso por el propio bot y no se pudieron reemplazar. ' +
+        'Detén el bot completamente, corre .actualizar una vez desde ahí (o "git read-tree -mu HEAD" manualmente) para aplicar la exclusión, y vuelve a iniciarlo.'
+      )
+    }
+    throw error
+  }
+
+  for (const rel of PRESERVE_ON_UPDATE) {
+    runIgnore(`git update-index --no-assume-unchanged "${rel}"`)
+    runIgnore(`git rm --cached -f "${rel}"`)
+  }
+
+  const after = run('git rev-parse HEAD').trim()
+  const shortBefore = before.slice(0, 7)
+  const shortAfter = after.slice(0, 7)
+
+  let out = `Updating ${shortBefore}..${shortAfter}\nFast-forward\n`
+  try {
+    const stat = run(`git diff --stat ${before}..${after}`).trim()
+    if (stat) out += stat + '\n'
+  } catch {}
+  try {
+    const commits = run(`git log ${before}..${after} --oneline`).trim()
+    if (commits) out += '\n' + commits
+  } catch {}
+
+  return out.trim()
+}
+
+let handler = async (m, { conn, text, isOwner }) => {
+  if (!isOwner) {
+    return m.reply('*[❗] Solo los dueños pueden usar este comando.*')
+  }
+
+  m.react = async emoji => {
+    await conn.sendMessage(m.chat, {
+      react: { text: emoji, key: m.key }
+    })
+  }
+
+  await m.react('🕓')
+  const backed = backupPreserveFiles()
+
+  try {
+    const stdout = gitPullHard()
+    restorePreserveFiles(backed)
+    const reply = stdout.trim()
+    await conn.reply(m.chat, reply || '[✅] Actualización completada.', m, rcanal)
+    await m.react('✅')
+  } catch (error) {
+    restorePreserveFiles(backed)
+    console.error('Error ejecutando plugin owner-update.js:', error)
+    const msg = error?.stderr?.toString?.() || error?.stdout?.toString?.() || error?.message || String(error)
+    await m.reply(`*[❌] Error al actualizar.*\n\n\`\`\`${msg.slice(0, 1500)}\`\`\``)
+    await m.react('❌')
+  }
+}
+
+handler.help = ['update']
+handler.tags = ['owner']
+handler.command = ['update', 'actualizar', 'fix', 'fixed']
+handler.rowner = true
+
+export default handler
