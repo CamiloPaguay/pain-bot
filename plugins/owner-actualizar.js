@@ -1,6 +1,10 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 
+// 👇 Aquí defines el repositorio del que siempre se actualizará el bot
+const REPO_URL = 'https://github.com/CamiloPaguay/pain-bot';
+const REPO_BRANCH = 'main'; // cambia si tu rama principal se llama distinto
+
 const handler = async (m, { conn, text }) => {
   const datas = global;
   const idioma = datas.db.data.users[m.sender]?.language || global.defaultLenguaje;
@@ -8,10 +12,17 @@ const handler = async (m, { conn, text }) => {
   const tradutor = _translate.plugins.propietario_actualizar;
 
   try {
-    const stdout = execSync('git pull' + (m.fromMe && text ? ' ' + text : ''));
+    // Si el usuario escribe texto después del comando, se usa como rama alterna,
+    // si no, se usa la rama por defecto definida arriba.
+    const branch = m.fromMe && text ? text.trim() : REPO_BRANCH;
+
+    const stdout = execSync(`git pull ${REPO_URL} ${branch}`);
     let messager = stdout.toString();
+
     if (messager.includes('Already up to date.')) messager = tradutor.texto1;
     if (messager.includes('Updating')) messager = tradutor.texto2 + stdout.toString();
+
+    messager = `*Repositorio:* ${REPO_URL}\n*Rama:* ${branch}\n\n${messager}`;
     conn.reply(m.chat, messager, m);
   } catch (error) {
     try {
@@ -42,12 +53,12 @@ const handler = async (m, { conn, text }) => {
         }
       }
 
-      // Mensaje específico si es el error de archivos bloqueados de Windows
+      // Mensaje específico si es el error de archivos bloqueados de Windows (sharp, etc.)
       const errMsg = String(error.message || error);
       if (errMsg.includes('unlink') || errMsg.includes('Invalid argument')) {
         await conn.reply(
           m.chat,
-          '❌ No se pudo actualizar: falta configurar `sparse-checkout` para excluir node_modules. Revisa la guía que te dieron para el servidor.',
+          '❌ No se pudo actualizar: hay archivos en uso por el propio bot (node_modules). Detén el bot, corre `git pull` manualmente y vuelve a iniciarlo. Para evitar esto en el futuro, configura sparse-checkout excluyendo node_modules.',
           m
         );
         return;
@@ -69,7 +80,7 @@ const handler = async (m, { conn, text }) => {
   }
 };
 
-handler.help = ['update'];
+handler.help = ['update [rama]'];
 handler.tags = ['owner'];
 handler.command = /^(update|actualizar|gitpull)$/i;
 handler.rowner = true;
