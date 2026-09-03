@@ -45,11 +45,7 @@ const handler = async (m, { conn, text, usedPrefix }) => {
     if (!audioUrl)
       throw "[❗] No se encontró la URL del audio."
 
-    const info = `ִֶָ☾. 𝗣𝗹𝗮𝘆 ִֶָ☾.
- 𓍯  *Título:* ${title}
- 𓍯  *Canal:* ${author.name || author}
- 𓍯  *Duración:* ${duration}
- 𓍯  *Enlace:* ${videoUrl}`
+    const info = `ִֶָ`
 
     
     if (cover) {
