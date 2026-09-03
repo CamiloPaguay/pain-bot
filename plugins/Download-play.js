@@ -51,7 +51,7 @@ const handler = async (m, { conn, text, usedPrefix }) => {
   }
 }
 
-handler.command = ["play", "ytmp3", "playaudio"]
+handler.command = ["playyy", "ytmp3", "playaudio"]
 handler.tags = ["descargas"]
 handler.group = true
 
