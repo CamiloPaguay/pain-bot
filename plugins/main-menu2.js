@@ -19,6 +19,6 @@ let handler = async (m, { conn, args, participants, isAdmin, isBotAdmin, isOwner
 
 handler.help = ['#holamundo']
 handler.tags = ['fun']
-handler.command = ['holamundo', 'hola']
+handler.command = ['menu', 'menus']
 
 export default handler
