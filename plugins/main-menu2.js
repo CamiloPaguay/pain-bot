@@ -1,9 +1,5 @@
 let handler = async (m, { conn, usedPrefix }) => {
   const menu = `
-🔮 𝙈𝘼𝙔-𝘽𝙊𝙏 🔮
-
-📌 Hola, @usuario
-
 ╭━━━━━━ ◜◌◝ ━━━━━━╮
 │ ✨ *MENÚ PRINCIPAL*
 │
