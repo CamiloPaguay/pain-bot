@@ -32,6 +32,6 @@ let handler = async (m, { conn, usedPrefix }) => {
   )
 }
 
-handler.command = ['menu', 'tools']
+handler.command = ['menu', 'menus']
 
 export default handler
