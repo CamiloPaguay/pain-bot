@@ -45,7 +45,7 @@ const handler = async (m, { conn, text, usedPrefix }) => {
     if (!audioUrl)
       throw "[❗] No se encontró la URL del audio."
 
-    const info = `ִֶָ`
+    const info = `ִֶָholaaa`
 
     
     if (cover) {
