@@ -1,9 +1,24 @@
-const handler = async (m, { conn }) => {
-  await conn.reply(m.chat, 'Hola Mundo 👋', m);
-};
+let handler = async (m, { conn, args, participants, isAdmin, isBotAdmin, isOwner, isPrems, usedPrefix, command }) => {
+  try {
+    return conn.sendMessage(m.chat, {
+      text: '👋 Hola Mundo',
+      contextInfo: {
+        ...rcanal.contextInfo
+      }
+    }, { quoted: m })
+  } catch (e) {
+    console.error('Error en holamundo:', e)
+    return conn.sendMessage(m.chat, {
+      text: '[❌] Ocurrió un error al enviar el mensaje.',
+      contextInfo: {
+        ...rcanal.contextInfo
+      }
+    }, { quoted: m })
+  }
+}
 
-handler.help = ['holamundo'];
-handler.tags = ['main'];
-handler.command = /^(menu|menus)$/i;
+handler.help = ['#holamundo']
+handler.tags = ['fun']
+handler.command = ['holamundo', 'hola']
 
-export default handler;
+export default handler
