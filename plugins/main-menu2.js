@@ -15,6 +15,13 @@ import {
   resolveMenuContext,
 } from '../lib/menu-categories.js'
 
+// 🔧 Fallback seguro por si "rcanal" no está definido globalmente.
+// Si en tu bot existe global.rcanal, lo usará. Si no, usa un objeto vacío
+// para que el contextInfo no rompa el handler.
+function getContextInfo() {
+  return (typeof global !== 'undefined' && global.rcanal?.contextInfo) || {}
+}
+
 async function resolveMenuImage(conn, mainImg) {
   try {
     const type = await conn.getFile(mainImg, true)
@@ -40,7 +47,7 @@ async function sendCategoryResponse(conn, m, ctx, categories, category) {
   if (!isInteractiveBaileysEnabled()) {
     await conn.sendFile(m.chat, category.img, 'menu-cat.jpg', caption, m, null, {
       contextInfo: {
-        ...rcanal.contextInfo,
+        ...getContextInfo(),
         mentionedJid: [m.sender],
       },
     })
@@ -55,7 +62,7 @@ async function sendCategoryResponse(conn, m, ctx, categories, category) {
     console.error('Categoría interactiva falló:', interactiveError)
     await conn.sendFile(m.chat, category.img, 'menu-cat.jpg', caption, m, null, {
       contextInfo: {
-        ...rcanal.contextInfo,
+        ...getContextInfo(),
         mentionedJid: [m.sender],
       },
     })
@@ -81,7 +88,7 @@ const handler = async (m, { conn, usedPrefix }) => {
       const text = buildFullMenuText(m, ctx, categories)
       await conn.sendFile(m.chat, ctx.mainImg, 'thumbnail.jpg', text, m, null, {
         contextInfo: {
-          ...rcanal.contextInfo,
+          ...getContextInfo(),
           mentionedJid: [m.sender],
         },
       })
@@ -95,7 +102,7 @@ const handler = async (m, { conn, usedPrefix }) => {
 
       await conn.sendFile(m.chat, ctx.mainImg, 'thumbnail.jpg', header, m, null, {
         contextInfo: {
-          ...rcanal.contextInfo,
+          ...getContextInfo(),
           mentionedJid: [m.sender],
         },
       })
@@ -123,13 +130,17 @@ const handler = async (m, { conn, usedPrefix }) => {
     }
   } catch (e) {
     console.error('Error en menú:', e)
-    conn.sendMessage(m.chat, {
-      text: 'Hubo un error al mostrar el menú.',
-      contextInfo: {
-        ...rcanal.contextInfo,
-      },
-    }, { quoted: m })
-    throw e
+    try {
+      await conn.sendMessage(m.chat, {
+        text: 'Hubo un error al mostrar el menú.',
+        contextInfo: {
+          ...getContextInfo(),
+        },
+      }, { quoted: m })
+    } catch (sendError) {
+      console.error('Error al enviar mensaje de error:', sendError)
+    }
+    // ⚠️ Ya no se relanza el error (throw e) para no tumbar el proceso.
   }
 }
 
@@ -170,5 +181,8 @@ handler.all = async function (m, data) {
   }
 }
 
+handler.help = ['menu']
+handler.tags = ['main']
 handler.command = ['menu', 'help', 'menú']
+
 export default handler
